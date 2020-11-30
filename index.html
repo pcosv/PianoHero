@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<link rel="icon" href="data:,">
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<!-- polyfill -->
+	<script src="../inc/shim/Base64.js" type="text/javascript"></script>
+	<script src="../inc/shim/Base64binary.js" type="text/javascript"></script>
+	<script src="../inc/shim/WebAudioAPI.js" type="text/javascript"></script>
+	<!-- midi.js package -->
+	<script src="../js/midi/audioDetect.js" type="text/javascript"></script>
+	<script src="../js/midi/gm.js" type="text/javascript"></script>
+	<script src="../js/midi/loader.js" type="text/javascript"></script>
+	<script src="../js/midi/plugin.audiotag.js" type="text/javascript"></script>
+	<script src="../js/midi/plugin.webaudio.js" type="text/javascript"></script>
+	<script src="../js/midi/plugin.webmidi.js" type="text/javascript"></script>
+	<!-- utils -->
+	<script src="../js/util/dom_request_xhr.js" type="text/javascript"></script>
+	<script src="../js/util/dom_request_script.js" type="text/javascript"></script>
+
+	<script src="../inc/shim/Base64.js" type="text/javascript"></script>
+	<script src="../inc/shim/Base64binary.js" type="text/javascript"></script>
+	<script src="../inc/shim/WebAudioAPI.js" type="text/javascript"></script>
+	<script src="../inc/shim/WebMIDIAPI.js" type="text/javascript"></script>
+	<!-- jasmid package -->
+	<script src="../inc/jasmid/stream.js"></script>
+	<script src="../inc/jasmid/midifile.js"></script>
+	<script src="../inc/jasmid/replayer.js"></script>
+	<!-- midi.js package -->
+	<script src="../js/midi/audioDetect.js" type="text/javascript"></script>
+	<script src="../js/midi/gm.js" type="text/javascript"></script>
+	<script src="../js/midi/loader.js" type="text/javascript"></script>
+	<script src="../js/midi/plugin.audiotag.js" type="text/javascript"></script>
+	<script src="../js/midi/plugin.webaudio.js" type="text/javascript"></script>
+	<script src="../js/midi/plugin.webmidi.js" type="text/javascript"></script>
+	<script src="../js/midi/player.js" type="text/javascript"></script>
+	<script src="../js/midi/synesthesia.js" type="text/javascript"></script>
+	<!-- utils -->
+	<script src="../js/util/dom_request_xhr.js" type="text/javascript"></script>
+	<script src="../js/util/dom_request_script.js" type="text/javascript"></script>
+	<!-- includes -->
+	<script src="./inc/timer.js" type="text/javascript"></script>
+	<script src="./inc/colorspace.js" type="text/javascript"></script>
+	<script src="./inc/event.js" type="text/javascript"></script>
+
+	<title>Piano Hero</title>
+
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			outline: none;
+			border: none;
+
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+		}
+
+		html,
+		body {
+			position: relative;
+			width: 100%;
+			height: 100%;
+		}
+
+		section {
+			position: relative;
+			margin: 0 auto;
+			top: 0;
+			width: 440px;
+			max-width: 100%;
+			height: 100%;
+			overflow: hidden;
+
+			box-shadow: 0 0 10px 0 #333;
+		}
+
+		section ol {
+			list-style: none;
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 50px;
+
+			box-shadow: 0 0 10px 0 #333;
+
+			z-index: 2;
+		}
+
+		section ol li {
+			position: relative;
+			float: left;
+			width: calc(100% / 4);
+			height: 100%;
+			text-align: center;
+			font-size: larger;
+			color: #000;
+		}
+
+		section ol li span {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			width: 40px;
+			height: 40px;
+			background-color: rgba(255, 255, 255, .75);
+			font-size: 30px;
+
+			transform: translate(-50%, -50%);
+
+			border-radius: 50%;
+
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		section ol li:nth-of-type(1) {
+			background-color: #fc4921;
+		}
+
+		section ol li:nth-of-type(2) {
+			background-color: #ff9f40;
+		}
+
+		section ol li:nth-of-type(3) {
+			background-color: #ffff40;
+		}
+
+		section ol li:nth-of-type(4) {
+			background-color: #40ff40;
+		}
+
+		section ol li:nth-of-type(5) {
+			background-color: #4040ff;
+		}
+
+		section ol li:nth-of-type(6) {
+			background-color: #393677;
+		}
+
+		section ol li:nth-of-type(7) {
+			background-color: #a840ff;
+		}
+
+		section ul {
+			list-style: none;
+			position: absolute;
+			left: 0;
+			top: 50px;
+			width: 100%;
+			height: calc(100% - 50px);
+
+			z-index: 1;
+		}
+
+		section ul li {
+			position: relative;
+			float: left;
+			width: calc(100% / 4);
+			height: 100%;
+		}
+
+		section ul li div {
+			position: absolute;
+			margin: 0 10px;
+			width: calc(100% - 20px);
+		}
+
+		section ul li:nth-of-type(1) div {
+			background-color: #fc4921;
+		}
+
+		section ul li:nth-of-type(2) div {
+			background-color: #ff9f40;
+		}
+
+		section ul li:nth-of-type(3) div {
+			background-color: #ffff40;
+		}
+
+		section ul li:nth-of-type(4) div {
+			background-color: #40ff40;
+		}
+
+		section ul li:nth-of-type(5) div {
+			background-color: #4040ff;
+		}
+
+		section ul li:nth-of-type(6) div {
+			background-color: #393677;
+		}
+
+		section ul li:nth-of-type(7) div {
+			background-color: #a840ff;
+		}
+
+		.load {
+			margin: 20px;
+			width: 50%;
+			background-color: bisque;
+		}
+
+		.selectChannel {
+			margin: 20px;
+			height: max-content;
+			width: 500px;
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			padding: 10px;
+			background-color: bisque;
+		}
+
+		.selectChannel .radio {
+			padding: 10px;
+			margin: 10px;
+
+		}
+	</style>
+</head>
+
+<body>
+	<div class="load">
+		<label for="midiFileInput">Please choose a midi file</label>
+		<input type="file" id="midiFileInput" accept=".mid">
+	</div>
+	<div class="selectChannel"></div>
+	<section class="game">
+		<ol>
+			<li><span>◄</span></li>
+			<li><span>▼</span></li>
+			<li><span>▲</span></li>
+			<li><span>►</span></li>
+		</ol>
+		<ul>
+			<li>
+				<!-- <div style="top: 10px; height: 100px"></div>
+				<div style="top: 130px; height: 50px"></div>
+				<div style="top: 300px; height: 150px"></div> -->
+			</li>
+			<li>
+				<!-- <div style="top: 50px; height: 150px"></div>
+				<div style="top: 300px; height: 100px"></div>
+				<div style="top: 450px; height: 150px"></div> -->
+			</li>
+			<li>
+				<!-- <div style="top: 10px; height: 30px"></div>
+				<div style="top: 200px; height: 50px"></div>
+				<div style="top: 260px; height: 20px"></div> -->
+			</li>
+			<li>
+				<!-- <div style="top: 200px; height: 100px"></div>
+				<div style="top: 400px; height: 100px"></div>
+				<div style="top: 550px; height: 50px"></div> -->
+			</li>
+		</ul>
+	</section>
+</body>
+
+</html>
+
+<script src="./MidiParser.js"></script>
+
+<script>
+
+	let load = document.querySelector('.load');
+	let selection = document.querySelector('.selectChannel');
+	let game = document.querySelector('.game');
+
+	load.style.display = 'block';
+	selection.style.display = 'none';
+	game.style.display = 'none';
+
+	let index = 0;
+	let midiJson = {};
+	let notesON = {}, notesOFF = {};
+	let parser = new MidiParser();
+	let columns = 4;
+	let channelCounter = [];
+	let counterNotes = [];
+
+	function play(index) {
+
+		MIDI.loadPlugin({
+			soundfontUrl: "./soundfont/",
+			instrument: "acoustic_grand_piano",
+			onprogress: function (state, progress) {
+			},
+			onsuccess: function () {
+				let delay = 0;
+
+
+				if (notesON[index] != undefined && notesON[index].hasOwnProperty("note")) {
+					MIDI.setVolume(0, 100);
+					MIDI.noteOn(0, notesON[index].note, notesON[index].velocity, 0);
+
+					MIDI.noteOff(0, notesOFF[index].note, (notesOFF[index].timestamp - notesON[index].timestamp) > 0 ? notesOFF[index].timestamp - notesON[index].timestamp : 0);
+
+				}
+				// index++;
+			}
+		});
+	}
+
+	function indexOfMax(arr) {
+		if (arr.length === 0) {
+			return -1;
+		}
+
+		let max = arr[0];
+		let maxIndex = 0;
+
+		for (let i = 1; i < arr.length; i++) {
+			if (arr[i] > max) {
+				maxIndex = i;
+				max = arr[i];
+			}
+		}
+
+		return maxIndex;
+	}
+
+	function indexOfMin(arr) {
+		if (arr.length === 0) {
+			return -1;
+		}
+
+		let max = arr[0];
+		let minIndex = 0;
+
+		for (let i = 1; i < arr.length; i++) {
+			if (arr[i] < max) {
+				minIndex = i;
+				max = arr[i];
+			}
+		}
+
+		return minIndex;
+	}
+
+	function sum(arr) {
+		let res = 0;
+		arr.forEach((el, index, array) => {
+			res = res + el;
+		});
+		return res;
+	}
+
+	// Load file and parse midi
+	let fileReader = new FileReader();
+	let midiFileInput = document.getElementById('midiFileInput');
+
+
+
+	midiFileInput.addEventListener('change', function (inputEvent) {
+		if (!inputEvent.target.files.length)
+			return false;
+
+
+		fileReader.readAsArrayBuffer(inputEvent.target.files[0]);
+		fileReader.onload = async function (file) {
+			let uint8Midi = new Uint8Array(file.target.result);
+			midiJson = parser.parseUint8(uint8Midi);
+			let counter = [];
+			midiJson.forEach((el, index, array) => {
+				if (counter[el.channel] == undefined) {
+					counter[el.channel] = 0;
+				}
+				counter[el.channel]++;
+			});
+			channelCounter = counter;
+
+			showSelection(channelCounter);
+		};
+
+
+		load.style.display = 'none';
+		selection.style.display = 'flex';
+	});
+
+	function showSelection(channels) {
+
+		channels.forEach((channel, index, array) => {
+
+			selection.insertAdjacentHTML('beforeend', `<input type="radio" class="radio" value="${index}" name="selection" id="${index}"> ${channel}`);
+
+		});
+
+		selection.insertAdjacentHTML('beforeend', `<input type="button" class="confirm" value="confirmar" onclick="start()">`);
+
+	}
+
+	async function selectChannel(channel = 0) {
+
+		notesON = await midiJson.filter((e) => { return (e.channel == channel && e.type == "noteOn") })
+
+		notesON.forEach((el, index, array) => {
+			if (counterNotes[el.note % 12] == undefined) {
+				counterNotes[el.note % 12] = 0;
+			}
+			notesON[index].column = el.note % 12;
+			counterNotes[el.note % 12]++;
+
+		});
+
+		let counterNotesAux = counterNotes.slice(0);
+		let result = [];
+
+		for (let i = 0; i < columns; i++) {
+			result[i] = [];
+		}
+
+		counterNotes.forEach((c, index, array) => {
+
+			let max = indexOfMax(counterNotesAux);
+			counterNotesAux[indexOfMax(counterNotesAux)] = 0;
+
+			result[indexOfMin(result)].push(max);
+
+		});
+
+
+		notesON.forEach((el, index, array) => {
+
+			for (let i = 0; i < 4; i++) {
+				if (result[i].includes(el.note % 12)) {
+					notesON[index].column = i;
+				}
+			}
+
+		});
+		console.log(notesON);
+		notesOFF = await midiJson.filter((e) => { return (e.channel == channel && e.type == "noteOff") })
+
+		console.log(notesOFF);
+	}
+
+
+	/*
+		Código de Jadinho aqui
+	*/
+
+	function start() {
+
+		var radios = document.getElementsByName('selection');
+
+		radios.forEach(async (radio, index, array) => {
+			if (radio.checked) {
+				
+				await selectChannel(radio.value);
+
+				selection.style.display = 'none';
+				game.style.display = 'block';
+
+
+
+
+
+
+				let topStart = document.querySelector('body > section > ul').clientHeight / 2;
+				let rate = 2;
+				notesON.forEach((e, i) => {
+
+					let div = document.createElement("div");
+						div.style.top = (topStart + e.timestamp) / rate +'px';
+						div.style.height = (notesOFF[i].timestamp - e.timestamp) / rate +'px';
+						div.setAttribute('id', i);
+
+					document.querySelector('body > section > ul > li:nth-of-type('+ (e.column + 1) +')').append(div);
+
+				});
+
+				let commands = {
+					1: {
+						checked: false,
+						index: -1
+					},
+					2: {
+						checked: false,
+						index: -1
+					},
+					3: {
+						checked: false,
+						index: -1
+					},
+					4: {
+						checked: false,
+						index: -1
+					}
+				};
+
+
+				window.addEventListener('keyup', e => {
+					switch (e.key) {
+						case 'ArrowLeft':
+							commands[1].checked = false;
+							commands[1].index = -1
+						break;
+						case 'ArrowDown':
+							commands[2].checked = false;
+							commands[2].index = -1
+						break;
+						case 'ArrowUp':
+							commands[3].checked = false;
+							commands[3].index = -1
+						break;
+						case 'ArrowRight':
+							commands[4].checked = false;
+							commands[4].index = -1
+						break;
+					}
+				});
+
+				window.addEventListener('keydown', e => {
+
+					switch (e.key) {
+						case 'ArrowLeft':
+
+							// console.log('oiii');
+
+							document.querySelectorAll('body > section > ul > li:nth-of-type(1) > div').forEach((div, i) => {
+
+								let top = +div.style.top.replace('px', '');
+								let height = +div.style.height.replace('px', '');
+
+								// console.log(i, commands[1].checked, commands[1].index, top, height);
+
+								if (
+									!commands[1].checked &&
+									commands[1].index == -1 &&
+									top < 0 && Math.abs(top) <= height * 0.5
+									// top < 0 && // chegou
+									// height - top > height && // ainda está
+									// height + top > 0 // se ainda não passou
+								) {
+
+									// console.log('entrou');
+
+									commands[1].checked = true;
+									commands[1].index = i;
+
+									play(+div.getAttribute('id'));
+
+								}
+
+							});
+
+							break;
+						case 'ArrowDown':
+
+							document.querySelectorAll('body > section > ul > li:nth-of-type(2) > div').forEach((div, i) => {
+
+								let top = +div.style.top.replace('px', '');
+								let height = +div.style.height.replace('px', '');
+
+								if (
+									!commands[2].checked &&
+									commands[2].index == -1 &&
+									top < 0 && Math.abs(top) <= height * 0.5
+									// top < 0 && // chegou
+									// height - top > height && // ainda está
+									// height + top > 0 // se ainda não passou
+								) {
+									commands[2].checked = true;
+									commands[2].index = i;
+
+									play(+div.getAttribute('id'));
+								}
+
+							});
+
+							break;
+						case 'ArrowUp':
+
+							document.querySelectorAll('body > section > ul > li:nth-of-type(3) > div').forEach((div, i) => {
+
+								let top = +div.style.top.replace('px', '');
+								let height = +div.style.height.replace('px', '');
+
+								if (
+									!commands[3].checked &&
+									commands[3].index == -1 &&
+									top < 0 && Math.abs(top) <= height * 0.5
+									// top < 0 && // chegou
+									// height - top > height && // ainda está
+									// height + top > 0 // se ainda não passou
+								) {
+									commands[3].checked = true;
+									commands[3].index = i;
+
+									play(+div.getAttribute('id'));
+								}
+
+							});
+
+							break;
+						case 'ArrowRight':
+
+							column = document.querySelector('body > section > ul > li:nth-of-type(4)');
+
+							document.querySelectorAll('body > section > ul > li:nth-of-type(4) > div').forEach((div, i) => {
+
+								let top = +div.style.top.replace('px', '');
+								let height = +div.style.height.replace('px', '');
+
+								if (
+									!commands[4].checked &&
+									commands[4].index == -1 &&
+									top < 0 && Math.abs(top) <= height * 0.5
+									// top < 0 && // chegou
+									// height - top > height && // ainda está
+									// height + top > 0 // se ainda não passou
+								) {
+									commands[4].checked = true;
+									commands[4].index = i;
+
+									play(+div.getAttribute('id'));
+								}
+
+							});
+
+							break;
+
+					}
+
+				});
+
+				let ps = 5;
+				setInterval(() => {
+
+					document.querySelectorAll('body > section > ul > li:nth-of-type(1) > div').forEach((div, i) => {
+
+						let top = +div.style.top.replace('px', '');
+						let height = +div.style.height.replace('px', '');
+
+						div.style.top = (top - ps) + 'px';
+
+						if (
+							commands[1].index == i &&
+							(top < 0 && Math.abs(top) > height)
+						) {
+
+							commands[1].checked = false;
+							commands[1].index = -1;
+
+						}
+
+					});
+					document.querySelectorAll('body > section > ul > li:nth-of-type(2) > div').forEach((div, i) => {
+
+						let top = +div.style.top.replace('px', '');
+						let height = +div.style.height.replace('px', '');
+
+						div.style.top = (top - ps) + 'px';
+
+						if (
+							commands[2].index == i &&
+							(top < 0 && Math.abs(top) > height)
+						) {
+
+							commands[2].checked = false;
+							commands[2].index = -1;
+
+						}
+
+					});
+					document.querySelectorAll('body > section > ul > li:nth-of-type(3) > div').forEach((div, i) => {
+
+						let top = +div.style.top.replace('px', '');
+						let height = +div.style.height.replace('px', '');
+
+						div.style.top = (top - ps) + 'px';
+
+						if (
+							commands[3].index == i &&
+							(top < 0 && Math.abs(top) > height)
+						) {
+
+							commands[3].checked = false;
+							commands[3].index = -1;
+
+						}
+
+					});
+					document.querySelectorAll('body > section > ul > li:nth-of-type(4) > div').forEach((div, i) => {
+
+						let top = +div.style.top.replace('px', '');
+						let height = +div.style.height.replace('px', '');
+
+						div.style.top = (top - ps) + 'px';
+
+						if (
+							commands[4].index == i &&
+							(top < 0 && Math.abs(top) > height)
+						) {
+
+							commands[4].checked = false;
+							commands[4].index = -1;
+
+						}
+
+					});
+
+					// console.log(commands[1].checked, commands[2].checked, commands[3].checked, commands[4].checked);
+
+					if (commands[1].checked) {
+						document.querySelector('body > section > ol > li:nth-of-type(1)').style.color = '#00f';
+					} else {
+						document.querySelector('body > section > ol > li:nth-of-type(1)').style.color = '#333';
+					}
+
+					if (commands[2].checked) {
+						document.querySelector('body > section > ol > li:nth-of-type(2)').style.color = '#00f';
+					} else {
+						document.querySelector('body > section > ol > li:nth-of-type(2)').style.color = '#333';
+					}
+
+					if (commands[3].checked) {
+						document.querySelector('body > section > ol > li:nth-of-type(3)').style.color = '#00f';
+					} else {
+						document.querySelector('body > section > ol > li:nth-of-type(3)').style.color = '#333';
+					}
+
+					if (commands[4].checked) {
+						document.querySelector('body > section > ol > li:nth-of-type(4)').style.color = '#00f';
+					} else {
+						document.querySelector('body > section > ol > li:nth-of-type(4)').style.color = '#333';
+					}
+
+
+				}, 1000 / 500);
+
+
+
+			}
+		});
+
+	}
+
+</script>
