@@ -285,25 +285,13 @@
 
 	function play(index) {
 
-		MIDI.loadPlugin({
-			soundfontUrl: "./soundfont/",
-			instrument: "acoustic_grand_piano",
-			onprogress: function (state, progress) {
-			},
-			onsuccess: function () {
-				let delay = 0;
+		if (notesON[index] != undefined && notesON[index].hasOwnProperty("note")) {
+			MIDI.setVolume(0, 100);
+			MIDI.noteOn(0, notesON[index].note, notesON[index].velocity, 0);
 
+			MIDI.noteOff(0, notesOFF[index].note, (notesOFF[index].timestamp - notesON[index].timestamp) > 0 ? notesOFF[index].timestamp - notesON[index].timestamp : 0);
+		}
 
-				if (notesON[index] != undefined && notesON[index].hasOwnProperty("note")) {
-					MIDI.setVolume(0, 100);
-					MIDI.noteOn(0, notesON[index].note, notesON[index].velocity, 0);
-
-					MIDI.noteOff(0, notesOFF[index].note, (notesOFF[index].timestamp - notesON[index].timestamp) > 0 ? notesOFF[index].timestamp - notesON[index].timestamp : 0);
-
-				}
-				// index++;
-			}
-		});
 	}
 
 	function indexOfMax(arr) {
@@ -356,7 +344,7 @@
 
 
 
-	midiFileInput.addEventListener('change', function (inputEvent) {
+	midiFileInput.addEventListener('change', async function (inputEvent) {
 		if (!inputEvent.target.files.length)
 			return false;
 
@@ -376,6 +364,18 @@
 
 			showSelection(channelCounter);
 		};
+
+		await MIDI.loadPlugin({
+			soundfontUrl: "./soundfont/",
+			instrument: "acoustic_grand_piano",
+			onprogress: function (state, progress) {
+			},
+			onsuccess: function () {
+
+
+				
+			}
+		});
 
 
 		load.style.display = 'none';
@@ -629,7 +629,7 @@
 
 				});
 
-				let ps = 5;
+				let ps = 6;
 				setInterval(() => {
 
 					document.querySelectorAll('body > section > ul > li:nth-of-type(1) > div').forEach((div, i) => {
